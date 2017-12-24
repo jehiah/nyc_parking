@@ -1,1 +1,10 @@
 data
+
+# from https://github.com/jamesbursa/analyze-nyc-parking-signs
+analyze_signs.pl
+*.log
+block_dimension
+parking_fact
+regulation_dimension
+regulation_time_dimension
+

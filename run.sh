@@ -23,3 +23,4 @@ if [ ! -e data/signs.csv ]; then
     echo "downloading signs.csv"
     curl --silent -o data/signs.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/signs.CSV" || exit 1
 fi
+
