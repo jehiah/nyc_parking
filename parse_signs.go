@@ -22,6 +22,7 @@ func main() {
 
 	var failed, success int
 	counter := make(map[signs.SignType]int)
+	seen := make(map[string]bool)
 	for {
 		row, err := r.Read()
 		if err == io.EOF {
@@ -39,6 +40,13 @@ func main() {
 		}
 		success += 1
 		counter[sign.Type] += 1
+		if seen[sign.Description] {
+			continue
+		}
+		seen[sign.Description] = true
+		if sign.Type == signs.SpecialInterestParking {
+			log.Printf("special: %s", sign.Description)
+		}
 		// fmt.Println(sign)
 	}
 	log.Printf("success:%d failed:%d", success, failed)

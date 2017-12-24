@@ -14,9 +14,9 @@ const (
 	BuildingLine
 	BusInformation
 	InformationSign
-	Parking
+	ParkingSign
 	AngleParking
-	SpecialParking
+	SpecialInterestParking
 	BlankSign
 )
 
@@ -42,7 +42,7 @@ func FromCSV(row []string) (s RawSign, err error) {
 		Seq:         seq,
 		Distance:    row[3],
 		Arrow:       row[4],
-		Description: strings.TrimSpace(row[5]),
+		Description: CleanDescription(strings.TrimSpace(row[5])),
 		Mutcd_Code:  strings.TrimSpace(row[6]),
 	}
 	s.Type = SignTypeFromDescription(s.Description)
