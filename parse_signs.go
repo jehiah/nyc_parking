@@ -44,8 +44,11 @@ func main() {
 			continue
 		}
 		seen[sign.Description] = true
-		if sign.Type == signs.SpecialInterestParking {
-			log.Printf("special: %s", sign.Description)
+		// if sign.Type == signs.SpecialInterestParking {
+		// 	log.Printf("special: %s", sign.Description)
+		// }
+		if sign.Type == signs.UnknownSign {
+			log.Printf("unknown: %s", sign.Description)
 		}
 		// fmt.Println(sign)
 	}

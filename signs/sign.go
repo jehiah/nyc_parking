@@ -18,6 +18,7 @@ const (
 	AngleParking
 	SpecialInterestParking
 	BlankSign
+	OtherRegulationSign
 )
 
 type RawSign struct {
