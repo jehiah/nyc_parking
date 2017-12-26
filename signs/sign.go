@@ -19,6 +19,7 @@ const (
 	SpecialInterestParking
 	BlankSign
 	OtherRegulationSign
+	StreetCleaning
 )
 
 type RawSign struct {

@@ -122,6 +122,15 @@ func SignTypeFromDescription(d string) SignType {
 			return OtherRegulationSign
 		}
 	}
+	
+	for _, needle := range[]string{
+		"BROOM SYMBOL",
+		"(SANITATION SYMBOL",
+	} {
+		if strings.Contains(d, needle) {
+			return StreetCleaning
+		}
+	}
 
 	// Parking Regulation
 	for _, prefix := range []string{
@@ -141,6 +150,7 @@ func SignTypeFromDescription(d string) SignType {
 		"2 HOUR PARKING",
 		"3 HOUR PARKING",
 		"4 HOUR PARKING",
+		"6 HOUR PARKING",
 		"48 HOUR PARKING",
 		"1 HR MUNI-METER PARKING",
 		"2 HR MUNI-METER PARKING",
@@ -159,7 +169,7 @@ func SignTypeFromDescription(d string) SignType {
 		}
 	}
 
-	for _, kw := range []string{
+	for _, needle := range []string{
 		"DEP",
 		"OFFICE",
 		"VEHICLES",
@@ -202,7 +212,7 @@ func SignTypeFromDescription(d string) SignType {
 		"CONSUL",
 		"DIPLOMAT",
 	} {
-		if strings.Contains(d, kw) {
+		if strings.Contains(d, needle) {
 			return SpecialInterestParking
 		}
 	}
