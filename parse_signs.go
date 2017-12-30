@@ -1,45 +1,24 @@
 package main
 
 import (
-	"encoding/csv"
-	"flag"
-	"io"
 	"log"
 	"os"
 
 	"github.com/jehiah/nyc_parking/signs"
 )
 
-func main() {
-	flag.Parse()
-
-	f, err := os.Open("data/signs.csv")
+func ParseSigns(filename string) {
+	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	r := csv.NewReader(f)
-	r.Read() // consume header
+	s, errors := signs.ParseCSV(f)
 
-	var failed, success int
-	counter := make(map[signs.SignType]int)
+	counter := make(map[string]int)
 	seen := make(map[string]bool)
-	for {
-		row, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		sign, err := signs.FromCSV(row)
-		if err != nil {
-			log.Printf("error %s", err)
-			failed += 1
-			continue
-		}
-		success += 1
-		counter[sign.Type] += 1
+	for _, sign := range s {
+		counter[sign.Type.String()] += 1
+		counter[sign.Borough] += 1
 		if seen[sign.Description] {
 			continue
 		}
@@ -47,12 +26,16 @@ func main() {
 		// if sign.Type == signs.SpecialInterestParking {
 		// 	log.Printf("special: %s", sign.Description)
 		// }
-		if sign.Type == signs.UnknownSign {
-			log.Printf("unknown: %s", sign.Description)
-		}
+		// if sign.Type == signs.UnknownSign {
+		// 	log.Printf("unknown: %s", sign.Description)
+		// }
 		// fmt.Println(sign)
 	}
-	log.Printf("success:%d failed:%d", success, failed)
+	log.Printf("success:%d failed:%d", len(s), len(errors))
+	for _, err := range errors {
+		log.Print(err)
+	}
+	log.Printf("Signs:")
 	for t, c := range counter {
 		log.Printf("%s: %d", t, c)
 	}

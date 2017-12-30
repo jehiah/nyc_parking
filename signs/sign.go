@@ -22,7 +22,7 @@ const (
 	StreetCleaning
 )
 
-type RawSign struct {
+type Sign struct {
 	Type        SignType
 	Borough     string
 	Order       string
@@ -33,12 +33,12 @@ type RawSign struct {
 	Mutcd_Code  string
 }
 
-func FromCSV(row []string) (s RawSign, err error) {
+func FromCSV(row []string) (s Sign, err error) {
 	seq, err := strconv.Atoi(row[2])
 	if err != nil {
 		return
 	}
-	s = RawSign{
+	s = Sign{
 		Borough:     row[0],
 		Order:       strings.TrimSpace(row[1]),
 		Seq:         seq,
