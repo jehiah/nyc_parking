@@ -122,8 +122,8 @@ func SignTypeFromDescription(d string) SignType {
 			return OtherRegulationSign
 		}
 	}
-	
-	for _, needle := range[]string{
+
+	for _, needle := range []string{
 		"BROOM SYMBOL",
 		"(SANITATION SYMBOL",
 	} {
