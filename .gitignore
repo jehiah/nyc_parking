@@ -1,4 +1,5 @@
 data
+nyc_parking
 
 # from https://github.com/jamesbursa/analyze-nyc-parking-signs
 analyze_signs.pl

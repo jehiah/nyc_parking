@@ -24,16 +24,16 @@ const (
 )
 
 type Sign struct {
-	Type          SignType
-	Borough       string
-	Order         string
-	Seq           int
-	Distance      string // TODO convert to int?
-	Arrow         string // "" (both), "W", "E", ...
-	Description   string
-	SignCode      string // Mutcd_Code
-	Supersedes    string
-	SuperseededBy string
+	Type         SignType
+	Borough      string
+	Order        string
+	Seq          int
+	Distance     string // TODO convert to int?
+	Arrow        string // "" (both), "W", "E", ...
+	Description  string
+	SignCode     string // Mutcd_Code
+	Supersedes   string
+	SupersededBy string
 }
 
 var superseededRegex = regexp.MustCompile(`\((SUPERSEDES|SUPERSEDED BY) ([-A-Z0-9]+)\)`)
@@ -57,5 +57,15 @@ func FromCSV(row []string) (s Sign, err error) {
 		s.Arrow = ""
 	}
 	s.Type = SignTypeFromDescription(s.Description)
+
+	for _, matches := range superseededRegex.FindAllStringSubmatch(s.Description, -1) {
+		switch matches[1] {
+		case "SUPERSEDED BY":
+			s.SupersededBy = matches[2]
+		case "SUPERSEDES":
+			s.Supersedes = matches[2]
+		}
+	}
+
 	return
 }
