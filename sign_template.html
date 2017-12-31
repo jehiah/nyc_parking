@@ -115,6 +115,7 @@ h2 .btn-sm {
 <table class="table table-xs table-hover" id="summary-table">
   <thead><tr>
     <th>Code</th>
+    <th>Type</th>
     <th>Sign</th>
     <th class="number" >Occurrences</th>
       {% if previous_data %}<th class="number sm" data-sortInitialOrder="desc">+/-</th>{% end %}
@@ -129,6 +130,7 @@ h2 .btn-sm {
   {% set previous_total = previous.get("count", 0) %}
   <tr>
     <th>{{data["code"]}}</th>
+    <td class="type">{{data["type"]}}</td>
     <td>{{data["description"]}}</td>
     <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
     {% if previous_data %}<td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>{% end %}

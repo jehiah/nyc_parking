@@ -103,6 +103,7 @@ func SignTypeFromDescription(d string) SignType {
 		"SIDE ROAD",
 		"CROSS ROAD",
 		"LARGE ARROW",
+		"LEFT CURVE",
 		"TURN SIGN",
 		"NO SKATEBOARDING",
 		"PARALLEL PARKING ONLY",
@@ -123,6 +124,8 @@ func SignTypeFromDescription(d string) SignType {
 		"BACK IN",
 		"ATTENTION DRIVERS",
 		"METERS ARE NOT IN EFFECT ABOVE TIMES",
+		"SPEED LIMIT",
+		"WARNING",
 	} {
 		if strings.HasPrefix(d, prefix) {
 			return InformationSign
