@@ -112,10 +112,18 @@ h2 .btn-sm {
 
 <h1>NYC Parking Signs {{report_dt.strftime("%Y %b %d")}} </h1>
 
+<ul>
+{% for sign_type, title in categories %}
+  <li><a href="#{{sign_type}}">{{title}}</a></li>
+{% end %}
+</ul>
+
+{% for sign_type, title in categories %}
+
+<h2 id="{{escape(sign_type)}}">{{title}}</h2>
 <table class="table table-xs table-hover" id="summary-table">
   <thead><tr>
-    <th>Code</th>
-    <th>Type</th>
+    <th style="min-width: 100px;">Code</th>
     <th>Sign</th>
     <th class="number" >Occurrences</th>
       {% if previous_data %}<th class="number sm" data-sortInitialOrder="desc">+/-</th>{% end %}
@@ -123,14 +131,13 @@ h2 .btn-sm {
   </thead>
   <tbody>
 
-{% for code in filter(lambda x: x != 'total', sorted(current_data.keys(), key=lambda x: current_data[x]["count"], reverse=True)) %}
+{% for code in filter(lambda x: current_data[x]["type"] == sign_type, sorted(current_data.keys(), key=lambda x: current_data[x]["count"], reverse=True)) %}
   {% set data = current_data[code] %}
   {% set previous = previous_data[code] or {} %}
   {% set current_total = data["count"] %}
   {% set previous_total = previous.get("count", 0) %}
   <tr>
     <th>{{data["code"]}}</th>
-    <td class="type">{{data["type"]}}</td>
     <td>{{data["description"]}}</td>
     <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
     {% if previous_data %}<td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>{% end %}
@@ -138,6 +145,8 @@ h2 .btn-sm {
 {% end %}
   </tbody>
 </table>
+
+{% end %}
 
         </div>
       </div>

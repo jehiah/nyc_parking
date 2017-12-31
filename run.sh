@@ -15,12 +15,17 @@ else
     brew services list postgresql
 fi
 
-if [ ! -e data/locations.csv ]; then
-    echo "downloading locations.csv"
-    curl --silent -o data/locations.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/locations.CSV" || exit 1
+YMD=$(date +%Y-%m-%d)
+YMD=2017-12-24
+
+if [ ! -e data/locations_$YMD.csv ]; then
+    echo "downloading locations_$YMD.csv"
+    curl --silent -o data/locations_$YMD.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/locations.CSV" || exit 1
 fi
-if [ ! -e data/signs.csv ]; then
-    echo "downloading signs.csv"
-    curl --silent -o data/signs.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/signs.CSV" || exit 1
+if [ ! -e data/signs_$YMD.csv ]; then
+    echo "downloading signs_$YMD.csv"
+    curl --silent -o data/signs_$YMD.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/signs.CSV" || exit 1
 fi
 
+./nyc_parking --signs=data/signs_$YMD.csv --locations=data/locations_$YMD.csv --sign_summary > data/sign_data_$YMD.json
+generate_report.py --current-file=data/sign_data_$YMD.json

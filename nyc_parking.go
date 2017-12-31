@@ -16,10 +16,12 @@ type SignCount struct {
 }
 
 func main() {
+	signsFile := flag.String("signs", "", "path to signs.csv")
+	locationsFile := flag.String("locations", "", "path to locations.csv")
 	signSummary := flag.Bool("sign_summary", false, "output json-lines of sign data")
 	flag.Parse()
 
-	s := ParseSigns("data/signs.csv")
+	s := ParseSigns(*signsFile)
 
 	if *signSummary {
 		if len(s) == 0 {
@@ -38,8 +40,10 @@ func main() {
 			if signCount[ss.Code] > 1 {
 				continue
 			}
-			if ss.Supersedes != "" && supersededBy[ss.Supersedes] == "" {
-				supersededBy[ss.Supersedes] = ss.Code
+			for _, sss := range ss.Supersedes {
+				if supersededBy[sss] == "" {
+					supersededBy[sss] = ss.Code
+				}
 			}
 			if ss.SupersededBy != "" && supersededBy[ss.Code] == "" {
 				supersededBy[ss.Code] = ss.SupersededBy
@@ -51,12 +55,12 @@ func main() {
 		// collapse counts
 		for code := range signLookup {
 			target := supersededBy[code]
-			if target == "" {
+			if target == "" || target == code {
 				continue
 			}
 			// log.Printf("collapsing %s", sign)
 			// recursively find target
-			for supersededBy[target] != "" {
+			for supersededBy[target] != "" && supersededBy[target] != code && supersededBy[target] != target {
 				// log.Printf("recursive %s -> %s", target, supersededBy[target])
 				target = supersededBy[target]
 			}
@@ -86,6 +90,6 @@ func main() {
 		}
 
 	} else {
-		ParseLocations("data/locations.csv")
+		ParseLocations(*locationsFile)
 	}
 }

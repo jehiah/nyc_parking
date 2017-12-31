@@ -31,7 +31,7 @@ type Sign struct {
 	Type         SignType `json:"type"`
 	Description  string   `json:"description"`
 	Code         string   `json:"code"` // Mutcd_Code
-	Supersedes   string   `json:"supersedes,omitempty"`
+	Supersedes   []string `json:"supersedes,omitempty"`
 	SupersededBy string   `json:"superseded_by,omitempty"`
 }
 
@@ -43,8 +43,6 @@ type SignPosition struct {
 	Arrow    string // "" (both), "W", "E", ...
 	Sign
 }
-
-var superseededRegex = regexp.MustCompile(`\((SUPERSEDES|SUPERSEDED BY|USE) ([-A-Z0-9]+)\)`)
 
 func FromCSV(row []string) (s SignPosition, err error) {
 	// Columns: SRP_Boro,SRP_Order,SRP_seq,SR_Distx,SR_Arrow,Sign_descripition,SR_Mutcd_Code,
@@ -66,18 +64,48 @@ func FromCSV(row []string) (s SignPosition, err error) {
 		s.Arrow = ""
 	}
 	description := CleanDescription(strings.TrimSpace(row[5]))
+	s.SupersededBy, s.Supersedes = extractSuperseedInfo(description)
+	s.Description = deleteSuperseedInfo(description)
 
+	s.Type = SignTypeFromDescription(s.Description)
+	return
+}
+
+var superseededRegex = regexp.MustCompile(`\((SUPERSEDES|SUPERSEDED BY|USE) ([^\)]+)\)`)
+
+func extractSuperseedInfo(description string) (superseededBy string, superseeds []string) {
 	// extract SUPERSEEDED BY, SUPERSEEDS
 	for _, matches := range superseededRegex.FindAllStringSubmatch(description, -1) {
 		switch matches[1] {
 		case "SUPERSEDED BY", "USE":
-			s.SupersededBy = matches[2]
+			fields := strings.Fields(matches[2])
+			for _, c := range fields {
+				if strings.HasPrefix(c, "-") {
+					continue
+				}
+				switch c {
+				case "&", ".", "DATED", "DON't":
+					continue
+				}
+				superseededBy = c
+				break
+			}
 		case "SUPERSEDES":
-			s.Supersedes = matches[2]
+			fields := strings.Fields(matches[2])
+			for _, c := range fields {
+				if strings.HasPrefix(c, "-") {
+					continue
+				}
+				switch c {
+				case "&", ".", "DATED", "DON't":
+					continue
+				}
+				superseeds = append(superseeds, c)
+			}
 		}
 	}
-	s.Description = strings.TrimSpace(superseededRegex.ReplaceAllString(description, " "))
-
-	s.Type = SignTypeFromDescription(s.Description)
 	return
+}
+func deleteSuperseedInfo(description string) string {
+	return strings.TrimSpace(superseededRegex.ReplaceAllString(description, " "))
 }

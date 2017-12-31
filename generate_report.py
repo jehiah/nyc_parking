@@ -103,6 +103,15 @@ def run(current_file, previous_file):
         pct_of=pct_of,
         delta_ms=delta_ms,
         delta=delta,
+        categories=(
+            ("ParkingSign", "Parking Signs"),
+            ("StreetCleaning", "Street Cleaning Signs"),
+            ("InformationSign", "Informational Signs"),
+            ("BusInformation", "Bus Related Signs"),
+            ("SpecialInterestParking", "Special Interest Signs"),
+            ("OtherRegulationSign", "Other Regulations"),
+            ("UnknownSign", "Unknown Signs"),
+        ),
     )
     
     with open("data/signs_%s.html" % report_dt.strftime("%Y-%m-%d"), 'w') as f:

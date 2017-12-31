@@ -2,6 +2,7 @@ package signs
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -53,8 +54,38 @@ func TestFromCSV(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if s != tc.Sign {
+			if !reflect.DeepEqual(s, tc.Sign) {
 				t.Errorf("got %#v expected %#v", s, tc.Sign)
+			}
+		})
+	}
+}
+
+func TestExtractSuperseedInfo(t *testing.T) {
+	type testCase struct {
+		Description  string
+		SupersededBy string
+		Superseeds   []string
+	}
+
+	tests := []testCase{
+		{
+			`(SUPERSEDED BY SP-464C DATED 8-2-99)`,
+			"SP-464C",
+			nil,
+		},
+	}
+
+	for i, tc := range tests {
+		tc := tc
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			t.Log(tc.Description)
+			sb, ss := extractSuperseedInfo(tc.Description)
+			if sb != tc.SupersededBy {
+				t.Errorf("got SupersededBy %q expected %q", sb, tc.SupersededBy)
+			}
+			if !reflect.DeepEqual(ss, tc.Superseeds) {
+				t.Errorf("got Superseeds %q expected %q", ss, tc.Superseeds)
 			}
 		})
 	}
