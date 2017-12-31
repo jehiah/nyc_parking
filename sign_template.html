@@ -100,6 +100,16 @@ h2 .btn-sm {
 	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDE0IDE0Ij48cGF0aCBkPSJNMTQgNWwtMi41LTIuNS00LjUgNC41LTQuNS00LjVMMCA1IDcgMTJ6Ii8+PC9zdmc+);
 }
 
+
+tr.filtered {
+  display:none;
+}
+tr.tablesorter-filter-row {
+  background: #ccc;
+}
+tr.tablesorter-filter-row > td > input {
+  width:100%;
+}
     </style>
     <script>
     var duration_percentile_data = [];
@@ -150,7 +160,7 @@ classify-able, and some may incorrectly categorized. The categories are just for
 {% for sign_type, title in categories %}
 
 <h2 id="{{escape(sign_type)}}">{{title}}</h2>
-<table class="table table-xs table-hover">
+<table class="table table-xs table-hover sign-data">
   <thead><tr>
     <th style="min-width: 100px;">Code</th>
     <th>Sign</th>
@@ -190,13 +200,19 @@ classify-able, and some may incorrectly categorized. The categories are just for
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.0/js/jquery.tablesorter.min.js" integrity="sha256-UD/M/6ixbHIPJ/hTwhb9IXbHG2nZSiB97b4BSSAVm6o=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.2/js/widgets/widget-filter.min.js" integrity="sha256-ncjHmQk4LNXHkuBnwIS//BeUa08k2LIQ74PFMDGbF1E=" crossorigin="anonymous"></script>
   <script>
 $(function(){
-  $("#summary-table").tablesorter({
+  $(".sign-data").tablesorter({
     textExtraction: function(node) {
       var node = $(node), sortkey = node.data('sortkey');
       return (sortkey !== undefined) ? sortkey : node.html();
+    },
+    widgets: ["filter"],
+    widgetOptions : {
+      filter_hideFilters: false
     }
+
   });
 });
   </script>
