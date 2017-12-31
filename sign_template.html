@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>NYC Parking Signs {{report_dt.strftime("%Y %b %d")}}</title>
+    <title>NYC Parking Signs {{current_dt.strftime("%Y %b %d")}}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -110,23 +110,55 @@ h2 .btn-sm {
       <div class="row">
          <div class="col-12">
 
-<h1>NYC Parking Signs {{report_dt.strftime("%Y %b %d")}} </h1>
+<h1>NYC Parking Signs as of {{current_dt.strftime("%Y %b %d")}} </h1>
 
-<ul>
+<p>This report highlights trends in the change in quantity of various NYC parkings signs over time. This analysis uses
+sign data from <a href="http://www.nyc.gov/html/dot/html/about/datafeeds.shtml#parkingreg">NYC DOT</a>, archive data
+from <a href="https://archive.org/">archive.org</a></p>
+
+<p>Code to generate this report is available on <a href="https://github.com/jehiah/nyc_parking">github.com/jehiah/nyc_parking</a>.</p>
+
+<p><strong>Methodology</strong>: Sign data has been modified for to resolve typo's and inconsistencies. NYC has many
+historical signs that have been marked as "SUPERSEDED BY ..." and in those cases counts are attributed to the current
+sign text, even though previous versions of a sign may be present on NYC streets. This minimizes visibility of minor
+sign text changes. All signs were classified into a category based on if they were primarily about a parking regulation
+(no parking, no standing), if they were informational (right turn ahead, school crossing), or if they granted privileges
+to special interests (AMBULANCE ONLY, U S GOVT VEHICLES ONLY, etc). Many infrequent signs were not clearly
+classify-able, and some may incorrectly categorized. The categories are just for informational purposes.</p>
+
+<table class="table table-hover">
+<thead>
+  <tr>
+    <td></td>
+    <th class="number">Sign Types</th>
+    <th class="number">Signs</th>
+  </tr>
+</thead>
+<tbody>
 {% for sign_type, title in categories %}
-  <li><a href="#{{sign_type}}">{{title}}</a></li>
+  {% set signs = filter(lambda x: current_data[x]["type"] == sign_type, current_data.keys()) %}
+  {% set total_count = sum(map(lambda x: current_data[x]["count"], signs)) %}
+  <tr>
+    <th><a href="#{{sign_type}}">{{title}}</a></th>
+    <td class="number">{{locale.format("%d", len(signs), grouping=True)}}</td>
+    <td class="number">{{locale.format("%d", total_count, grouping=True)}}</td>
+  </tr>
 {% end %}
-</ul>
+</tbody>
+</table>
 
 {% for sign_type, title in categories %}
 
 <h2 id="{{escape(sign_type)}}">{{title}}</h2>
-<table class="table table-xs table-hover" id="summary-table">
+<table class="table table-xs table-hover">
   <thead><tr>
     <th style="min-width: 100px;">Code</th>
     <th>Sign</th>
-    <th class="number" >Occurrences</th>
-      {% if previous_data %}<th class="number sm" data-sortInitialOrder="desc">+/-</th>{% end %}
+    <th class="number" >{% if previous_data %}{{current_dt.strftime("%Y/%m/%d")}}{% else %}Occurrences{% end %}</th>
+    {% if previous_data %}
+      <th class="number sm" data-sortInitialOrder="desc">+/-</th>
+      <th class="number" data-sortInitialOrder="desc">{{previous_dt.strftime("%Y/%m/%d")}}</th>
+    {% end %}
     </tr>
   </thead>
   <tbody>
@@ -138,9 +170,12 @@ h2 .btn-sm {
   {% set previous_total = previous.get("count", 0) %}
   <tr>
     <th>{{data["code"]}}</th>
-    <td>{{data["description"]}}</td>
+    <td>{{escape(data["description"])}}</td>
     <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
-    {% if previous_data %}<td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>{% end %}
+    {% if previous_data %}
+      <td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>
+      <td class="number" data-sortkey="{{escape(str(previous_total))}}">{{locale.format("%d", previous_total, grouping=True)}}</td>
+    {% end %}
   </tr>
 {% end %}
   </tbody>

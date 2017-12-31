@@ -85,7 +85,7 @@ def file_date(filename):
     return datetime.datetime.strptime(date_str, "%Y-%m-%d")
 
 def run(current_file, previous_file):
-    report_dt = file_date(current_file)
+    current_dt = file_date(current_file)
     previous_dt = file_date(previous_file)
     loader = tornado.template.Loader(".", autoescape=None)
 
@@ -96,7 +96,7 @@ def run(current_file, previous_file):
     t = loader.load("sign_template.html")
     output = t.generate(
         locale=locale,
-        report_dt=report_dt,
+        current_dt=current_dt,
         previous_dt=previous_dt,
         current_data = current_data,
         previous_data = previous_data,
@@ -114,7 +114,7 @@ def run(current_file, previous_file):
         ),
     )
     
-    with open("data/signs_%s.html" % report_dt.strftime("%Y-%m-%d"), 'w') as f:
+    with open("data/signs_%s.html" % current_dt.strftime("%Y-%m-%d"), 'w') as f:
         f.write(output)
     
 

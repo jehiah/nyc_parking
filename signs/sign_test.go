@@ -43,6 +43,20 @@ func TestFromCSV(t *testing.T) {
 				},
 			},
 		},
+		{
+			`B,P-233956,4,0102 ,   ,M 18 LTD (12"X 6") 8 STREET/4 AVENUE (16"X 6") (TYPICAL BUS ROUTE/DESTINATION PANEL (TEXT TO BE MODIFIED AS REQUIRED)                                                   ,SI-581G`,
+			SignPosition{
+				Borough:  "B",
+				Order:    "P-233956",
+				Seq:      4,
+				Distance: "0102",
+				Sign: Sign{
+					Type:        BusInformation,
+					Description: `M 18 LTD (12"X 6") 8 STREET/4 AVENUE (16"X 6") (TYPICAL BUS ROUTE/DESTINATION PANEL (TEXT TO BE MODIFIED AS REQUIRED)`,
+					Code:        "SI-581G",
+				},
+			},
+		},
 	}
 	for i, tc := range tests {
 		tc := tc

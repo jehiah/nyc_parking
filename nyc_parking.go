@@ -19,9 +19,10 @@ func main() {
 	signsFile := flag.String("signs", "", "path to signs.csv")
 	locationsFile := flag.String("locations", "", "path to locations.csv")
 	signSummary := flag.Bool("sign_summary", false, "output json-lines of sign data")
+	oldFormat := flag.Bool("old_format", false, "old CSV format")
 	flag.Parse()
 
-	s := ParseSigns(*signsFile)
+	s := ParseSigns(*signsFile, *oldFormat)
 
 	if *signSummary {
 		if len(s) == 0 {

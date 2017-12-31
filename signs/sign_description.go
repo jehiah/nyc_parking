@@ -130,6 +130,8 @@ func SignTypeFromDescription(d string) SignType {
 		"METERS ARE NOT IN EFFECT ABOVE TIMES",
 		"SPEED LIMIT",
 		"WARNING",
+		"PICTORIAL",
+		"DIAMOND",
 	} {
 		if strings.HasPrefix(d, prefix) {
 			return InformationSign
@@ -257,6 +259,7 @@ func SignTypeFromDescription(d string) SignType {
 		" BOARD",
 		"CONSUL",
 		"DIPLOMAT",
+		"FARMERS MARKET",
 	} {
 		if strings.Contains(d, needle) {
 			return SpecialInterestParking

@@ -54,7 +54,7 @@ func FromCSV(row []string) (s SignPosition, err error) {
 		Borough:  row[0],
 		Order:    strings.TrimSpace(row[1]),
 		Seq:      seq,
-		Distance: row[3],
+		Distance: strings.TrimSpace(row[3]),
 		Arrow:    strings.TrimSpace(row[4]),
 		Sign: Sign{
 			Code: strings.TrimSpace(row[6]),

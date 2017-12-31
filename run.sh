@@ -17,6 +17,7 @@ fi
 
 YMD=$(date +%Y-%m-%d)
 YMD=2017-12-24
+YMD=2017-01-13
 
 if [ ! -e data/locations_$YMD.csv ]; then
     echo "downloading locations_$YMD.csv"

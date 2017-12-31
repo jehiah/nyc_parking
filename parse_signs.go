@@ -7,12 +7,19 @@ import (
 	"github.com/jehiah/nyc_parking/signs"
 )
 
-func ParseSigns(filename string) []signs.SignPosition {
+func ParseSigns(filename string, oldFormat bool) []signs.SignPosition {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-	s, errors := signs.ParseCSV(f)
+	var errors []error
+	var s []signs.SignPosition
+	switch oldFormat {
+	case true:
+		s, errors = signs.ParseOldCSV(f)
+	case false:
+		s, errors = signs.ParseCSV(f)
+	}
 
 	counter := make(map[string]int)
 	seen := make(map[string]bool)
