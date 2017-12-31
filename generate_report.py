@@ -114,7 +114,7 @@ def run(current_file, previous_file):
         ),
     )
     
-    with open("data/signs_%s.html" % current_dt.strftime("%Y-%m-%d"), 'w') as f:
+    with open("data/nyc_dot_signs_%s.html" % current_dt.strftime("%Y-%m-%d"), 'w') as f:
         f.write(output)
     
 

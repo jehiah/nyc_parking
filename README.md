@@ -1,6 +1,8 @@
 This repo contains code to analyze NYC parking regulations and give insight into the quantity of parking spaces
 available throughout the week, and the different restrictions in place that increase or decrease parking.
 
+To view this analysis see https://jehiah.cz/nyc_dot_signs/
+
 Data:
 
 The primary data source is DOT published parking sign data available at
