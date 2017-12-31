@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>NYC Parking Signs {{report_dt.strftime("%Y %b %d")}}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <style>
+    .h2, h2 {
+      font-size: 1.25rem;
+    }
+    .h3, h3 {
+      font-size: 1.15rem;
+    }
+    .table-xs > thead > tr > th,
+    .table-xs > tbody > tr > th,
+    .table-xs > tfoot > tr > th,
+    .table-xs > thead > tr > td,
+    .table-xs > tbody > tr > td,
+    .table-xs > tfoot > tr > td {
+      padding: 2px;
+      font-size: 80%;
+    }
+    section {
+      margin-top: 50px;
+    }
+    section > h2 {
+      background: #f0f0f0;
+      padding: 5px;
+    }
+    .percentile_chart {
+      height:175px;
+    }
+    td.number, th.number {
+      text-align:right;
+      padding-right: 8px;
+    }
+
+    .table > thead > tr > th.sm,
+    .table > tbody > tr > th.sm,
+    .table > tfoot > tr > th.sm,
+    .table > thead > tr > td.sm,
+    .table > tbody > tr > td.sm,
+    .table > tfoot > tr > td.sm {
+      font-size:70%;
+    }
+
+td.number .down {
+  color:#1C7322;
+  font-weight:300;
+}
+td.number .down-5 {
+  color:#2FB639;
+  font-weight:400;
+}
+td.number .down-10 {
+  color:#3DE54A;
+  font-weight:500;
+}
+td.number .up {
+  color:#9E5656;
+  font-weight:300;
+}
+td.number .up-10 {
+  color:#E24F4F;
+  font-weight:500;
+}
+td.number .up-5 {
+  color:#DA4C4C;
+  font-weight:400;
+}
+
+a.endpoint {
+  font-weight:normal;
+  font-size:12px;
+}
+h2 .btn-sm {
+  padding: .1em .5em;
+}
+
+.tablesorter thead .tablesorter-header {
+	background-position: right 5px center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+}
+
+.tablesorter-header .tablesorter-header-inner {
+	position: relative;
+	padding-right: 18px;
+}
+
+.tablesorter thead .tablesorter-headerUnSorted:not(.sorter-false) {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE0IDIwIj48cGF0aCBkPSJNMTQgMTNsLTIuNS0yLjVMNyAxNWwtNC41LTQuNUwwIDEzbDcgN3pNMTQgNy41TDExLjUgMTAgNyA1LjUgMi41IDEwIDAgNy41bDctN3oiLz48L3N2Zz4=);
+}
+.tablesorter thead .tablesorter-headerAsc {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDE0IDE0Ij48cGF0aCBkPSJNMTQgOS41TDExLjUgMTIgNyA3LjUgMi41IDEyIDAgOS41bDctN3oiLz48L3N2Zz4=);
+}
+.tablesorter thead .tablesorter-headerDesc {
+	background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDE0IDE0Ij48cGF0aCBkPSJNMTQgNWwtMi41LTIuNS00LjUgNC41LTQuNS00LjVMMCA1IDcgMTJ6Ii8+PC9zdmc+);
+}
+
+    </style>
+    <script>
+    var duration_percentile_data = [];
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+         <div class="col-12">
+
+<h1>NYC Parking Signs {{report_dt.strftime("%Y %b %d")}} </h1>
+
+<table class="table table-xs table-hover" id="summary-table">
+  <thead><tr>
+    <th>Code</th>
+    <th>Sign</th>
+    <th class="number" >Occurrences</th>
+      {% if previous_data %}<th class="number sm" data-sortInitialOrder="desc">+/-</th>{% end %}
+    </tr>
+  </thead>
+  <tbody>
+
+{% for code in filter(lambda x: x != 'total', sorted(current_data.keys(), key=lambda x: current_data[x]["count"], reverse=True)) %}
+  {% set data = current_data[code] %}
+  {% set previous = previous_data[code] or {} %}
+  {% set current_total = data["count"] %}
+  {% set previous_total = previous.get("count", 0) %}
+  <tr>
+    <th>{{data["code"]}}</th>
+    <td>{{data["description"]}}</td>
+    <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
+    {% if previous_data %}<td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>{% end %}
+  </tr>
+{% end %}
+  </tbody>
+</table>
+
+        </div>
+      </div>
+      <div class="row"><div class="col-12"><small>report created <code>{{str(datetime.datetime.utcnow())}}</code></small></div></div>
+    </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.29.0/js/jquery.tablesorter.min.js" integrity="sha256-UD/M/6ixbHIPJ/hTwhb9IXbHG2nZSiB97b4BSSAVm6o=" crossorigin="anonymous"></script>
+  <script>
+$(function(){
+  $("#summary-table").tablesorter({
+    textExtraction: function(node) {
+      var node = $(node), sortkey = node.data('sortkey');
+      return (sortkey !== undefined) ? sortkey : node.html();
+    }
+  });
+});
+  </script>
+
+
+  </body>
+</html>

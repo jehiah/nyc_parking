@@ -30,6 +30,10 @@ func main() {
 		signLookup := make(map[string]signs.Sign)
 
 		for _, ss := range s {
+			switch ss.Type {
+			case signs.BuildingLine, signs.CurbLine:
+				continue
+			}
 			signCount[ss.Code] += 1
 			if signCount[ss.Code] > 1 {
 				continue
