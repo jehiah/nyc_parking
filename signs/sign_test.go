@@ -9,33 +9,37 @@ import (
 func TestFromCSV(t *testing.T) {
 	type testCase struct {
 		CSV  string
-		Sign Sign
+		Sign SignPosition
 	}
 
 	tests := []testCase{
 		{
 			`M,S-263382  ,1,0,NULL,Curb Line,CL        ,`,
-			Sign{
-				Type:        CurbLine,
-				Borough:     "M",
-				Order:       "S-263382",
-				Seq:         1,
-				Distance:    "0",
-				Description: "Curb Line",
-				SignCode:    "CL",
+			SignPosition{
+				Borough:  "M",
+				Order:    "S-263382",
+				Seq:      1,
+				Distance: "0",
+				Sign: Sign{
+					Type:        CurbLine,
+					Description: "Curb Line",
+					Code:        "CL",
+				},
 			},
 		},
 		{
 			`M,S-263382  ,9,556,NULL,NO PARKING (SANITATION BROOM SYMBOL) 11AM TO 12:30PM MON & THURS <----> (SUPERSEDED BY SP-853C),SP-372C   ,`,
-			Sign{
-				Type:         StreetCleaning,
-				Borough:      "M",
-				Order:        "S-263382",
-				Seq:          9,
-				Distance:     "556",
-				Description:  "NO PARKING (SANITATION BROOM SYMBOL) 11AM TO 12:30PM MON & THURS <----> (SUPERSEDED BY SP-853C)",
-				SignCode:     "SP-372C",
-				SupersededBy: "SP-853C",
+			SignPosition{
+				Borough:  "M",
+				Order:    "S-263382",
+				Seq:      9,
+				Distance: "556",
+				Sign: Sign{
+					Type:         StreetCleaning,
+					Description:  "NO PARKING (SANITATION BROOM SYMBOL) 11AM TO 12:30PM MON & THURS <---->",
+					Code:         "SP-372C",
+					SupersededBy: "SP-853C",
+				},
 			},
 		},
 	}

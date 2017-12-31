@@ -7,7 +7,7 @@ import (
 	"github.com/jehiah/nyc_parking/signs"
 )
 
-func ParseSigns(filename string) {
+func ParseSigns(filename string) []signs.SignPosition {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -39,4 +39,5 @@ func ParseSigns(filename string) {
 	for t, c := range counter {
 		log.Printf("%s: %d", t, c)
 	}
+	return s
 }

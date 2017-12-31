@@ -23,7 +23,6 @@ var descReplacer = strings.NewReplacer(
 	"1 HP ", "1 HOUR PARKING ",
 	"TRUC LOADING", "TRUCK LOADING",
 	"(SS BY", "(SUPERSEDED BY",
-	"(USE ", "(SUPERSEDED BY",
 	"(REPLACED BY ", "(SUPERSEDED BY ",
 	" SUPERSEDED BY R7-20RA", " (SUPERSEDED BY R7-20RA)",
 	" SUPERSEDED BY SP-663BA ", " (SUPERSEDED BY SP-663BA) ",
@@ -31,6 +30,9 @@ var descReplacer = strings.NewReplacer(
 	" SUPERSEDED BY SP-2BA ", " (SUPERSEDED BY SP-2BA) ",
 	" SUPERSEDED BY R7-61 ", " (SUPERSEDED BY R7-61) ",
 	" SUPERSEDED BY R7-61A ", " (SUPERSEDED BY R7-61A) ",
+	"MODIFIED AS REQUESTED", "MODIFIED AS REQUIRED",
+	"BUS SERVICE DESTINATION PANEL", "BUS DESTINATION PANEL",
+	"BUS SERVICE ROUTE PANEL", "BUS ROUTE PANEL",
 
 	// typos
 	"NP PARKING", "NO PARKING",
@@ -103,7 +105,6 @@ func SignTypeFromDescription(d string) SignType {
 		"LARGE ARROW",
 		"TURN SIGN",
 		"NO SKATEBOARDING",
-		"BUS STOP SIGN",
 		"PARALLEL PARKING ONLY",
 		"ANGLE PARKING ONLY",
 		"BACK IN ANGLE PARKING ONLY",
@@ -118,9 +119,34 @@ func SignTypeFromDescription(d string) SignType {
 		"YIELD",
 		"STOP",
 		"RESTRICTED LANE",
+		"PAY-BY-CELL LOCATOR NUMBER",
+		"BACK IN",
+		"ATTENTION DRIVERS",
+		"METERS ARE NOT IN EFFECT ABOVE TIMES",
 	} {
 		if strings.HasPrefix(d, prefix) {
 			return InformationSign
+		}
+	}
+
+	for _, needle := range []string{
+		"USE AS EXAMPLE FOR DIFFERENT LOCATION",
+	} {
+		if strings.Contains(d, needle) {
+			return InformationSign
+		}
+	}
+
+	for _, needle := range []string{
+		"BUS STOP SIGN",
+		"TYPICAL BUS ROUTE/DESTINATION PANEL",
+		"BUS DESTINATION PANEL (TEXT TO BE MODIFIED AS REQUIRED)",
+		"BUS ROUTE PANEL (TEXT TO BE MODIFIED AS REQUIRED)",
+		"REAL TIME PUBLIC INFORMATION BOX",
+		"LOCAL 2 ROUTE BUS RIDER",
+	} {
+		if strings.Contains(d, needle) {
+			return BusInformation
 		}
 	}
 

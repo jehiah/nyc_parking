@@ -6,12 +6,12 @@ import (
 	"log"
 )
 
-func ParseCSV(f io.Reader) ([]Sign, []error) {
+func ParseCSV(f io.Reader) ([]SignPosition, []error) {
 	r := csv.NewReader(f)
 	r.Read() // consume header
 
 	var errors []error
-	var signs []Sign
+	var signs []SignPosition
 	for {
 		row, err := r.Read()
 		if err == io.EOF {

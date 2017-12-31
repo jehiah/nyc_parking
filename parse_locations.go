@@ -7,7 +7,7 @@ import (
 	"github.com/jehiah/nyc_parking/locations"
 )
 
-func ParseLocations(filename string) {
+func ParseLocations(filename string) []locations.Location {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -25,4 +25,5 @@ func ParseLocations(filename string) {
 	for t, c := range counter {
 		log.Printf("%s: %d", t, c)
 	}
+	return l
 }
