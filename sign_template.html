@@ -190,6 +190,9 @@ classify-able, and some may incorrectly categorized. The categories are just for
 {% set current_codes = filter(lambda x: current_data[x].get("type") == sign_type, current_data.keys()) %}
 {% set previous_codes = filter(lambda x: previous_data[x].get("type") == sign_type, previous_data.keys()) %}
 {% set all_codes = list(set(current_codes) | set(previous_codes)) %}
+{% set total_count = sum(map(lambda x: current_data[x]["count"], current_codes)) %}
+{% set previous_count = sum(map(lambda x: previous_data[x]["count"], previous_codes)) %}
+
 {% for code in sorted(all_codes, key=lambda x: current_data.get(x, {"count":0})["count"], reverse=True) %}
   {% set data = current_data.get(code) or previous_data.get(code, {}) %}
   {% if code not in current_data %}
@@ -209,6 +212,17 @@ classify-able, and some may incorrectly categorized. The categories are just for
   </tr>
 {% end %}
   </tbody>
+  <tfoot>
+    <tr class="table-info">
+      <td>Total</td>
+      <td></td>
+      <td class="total-count number">{{locale.format("%d", total_count, grouping=True)}}</td>
+      {% if previous_data %}
+      <td class="delta number sm">{{delta(total_count, previous_count)}}</td>
+      <td class="previous-count number">{{locale.format("%d", previous_count, grouping=True)}}</td>
+      {% end %}
+    </tr>
+  </tfoot>
 </table>
 
 {% end %}
@@ -233,7 +247,30 @@ $(function(){
       filter_hideFilters: false
     }
 
+  }).bind('filterStart filterEnd', function(e, filter) {
+    if (e.type !== 'filterEnd') {
+      return
+    }
+    var tbody = filter.$tbodies[0]
+    var t1 =0 , t2 = 0;
+    $.each(tbody.children, function(i, tr){
+      if (tr.classList.contains("filtered")) {
+        return
+      }
+      t1 += (+tr.cells[2].dataset.sortkey)
+      if (tr.cells.length > 3) {
+        t2 += (+tr.cells[4].dataset.sortkey)
+      }
+    });
+    $(this).find("tfoot > tr > td.total-count").html(t1.toLocaleString())
+    $(this).find("tfoot > tr > td.previous-count").html(t2.toLocaleString())
+    var prefix = ""
+    if ((t1 - t2) > 0) {
+      prefix = "+"
+    }
+    $(this).find("tfoot > tr > td.delta").html(prefix + (t1 - t2).toLocaleString())
   });
+
 });
   </script>
 
