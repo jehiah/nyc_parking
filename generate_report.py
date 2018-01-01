@@ -74,6 +74,7 @@ def load_file(filename):
     with open(filename, 'r') as f:
         for line in f:
             row = json.loads(line)
+            assert 'type' in row, "%r" % row
             data[row['code']] = row
     return data
 

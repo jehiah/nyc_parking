@@ -141,17 +141,31 @@ classify-able, and some may incorrectly categorized. The categories are just for
   <tr>
     <td></td>
     <th class="number">Sign Types</th>
+    {% if previous_data %}
+      <th class="number sm" data-sortInitialOrder="desc">+/-</th>
+    {% end %}
     <th class="number">Signs</th>
+    {% if previous_data %}
+      <th class="number sm" data-sortInitialOrder="desc">+/-</th>
+    {% end %}
   </tr>
 </thead>
 <tbody>
 {% for sign_type, title in categories %}
   {% set signs = filter(lambda x: current_data[x]["type"] == sign_type, current_data.keys()) %}
+  {% set previous_signs = filter(lambda x: previous_data[x]["type"] == sign_type, previous_data.keys()) %}
   {% set total_count = sum(map(lambda x: current_data[x]["count"], signs)) %}
+  {% set previous_count = sum(map(lambda x: previous_data[x]["count"], previous_signs)) %}
   <tr>
     <th><a href="#{{sign_type}}">{{title}}</a></th>
     <td class="number">{{locale.format("%d", len(signs), grouping=True)}}</td>
+    {% if previous_signs %}
+      <td class="number sm">{{delta(len(signs), len(previous_signs))}}</td>
+    {% end %}
     <td class="number">{{locale.format("%d", total_count, grouping=True)}}</td>
+    {% if previous_signs %}
+      <td class="number sm">{{delta(total_count, previous_count)}}</td>
+    {% end %}
   </tr>
 {% end %}
 </tbody>
@@ -173,8 +187,14 @@ classify-able, and some may incorrectly categorized. The categories are just for
   </thead>
   <tbody>
 
-{% for code in filter(lambda x: current_data[x]["type"] == sign_type, sorted(current_data.keys(), key=lambda x: current_data[x]["count"], reverse=True)) %}
-  {% set data = current_data[code] %}
+{% set current_codes = filter(lambda x: current_data[x].get("type") == sign_type, current_data.keys()) %}
+{% set previous_codes = filter(lambda x: previous_data[x].get("type") == sign_type, previous_data.keys()) %}
+{% set all_codes = list(set(current_codes) | set(previous_codes)) %}
+{% for code in sorted(all_codes, key=lambda x: current_data.get(x, {"count":0})["count"], reverse=True) %}
+  {% set data = current_data.get(code) or previous_data.get(code, {}) %}
+  {% if code not in current_data %}
+    {% set data = {'count': 0, 'type': data['type'], 'description': data['description'], 'code': data['code'] } %}
+  {% end %}
   {% set previous = previous_data[code] or {} %}
   {% set current_total = data["count"] %}
   {% set previous_total = previous.get("count", 0) %}
@@ -183,7 +203,7 @@ classify-able, and some may incorrectly categorized. The categories are just for
     <td>{{escape(data["description"])}}</td>
     <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
     {% if previous_data %}
-      <td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{% if previous %}{{delta(current_total, previous_total)}}{% end %}</td>
+      <td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{{delta(current_total, previous_total)}}</td>
       <td class="number" data-sortkey="{{escape(str(previous_total))}}">{{locale.format("%d", previous_total, grouping=True)}}</td>
     {% end %}
   </tr>
