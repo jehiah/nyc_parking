@@ -110,6 +110,21 @@ tr.tablesorter-filter-row {
 tr.tablesorter-filter-row > td > input {
   width:100%;
 }
+tbody > tr> th.signcode {
+  font-family:Arial;
+  font-size:11px;
+  white-space: nowrap;
+}
+tbody > tr> td.signdesc {
+  font-size:11px;
+}
+tbody > tr> td.supersedes {
+  font-family:Arial;
+  font-size:10px;
+}
+tbody > tr> td.supersedes > code {
+  white-space: nowrap;
+}
     </style>
     <script>
     var duration_percentile_data = [];
@@ -183,6 +198,7 @@ classify-able, and some may incorrectly categorized. The categories are just for
       <th class="number sm" data-sortInitialOrder="desc">+/-</th>
       <th class="number" data-sortInitialOrder="desc">{{previous_dt.strftime("%Y/%m/%d")}}</th>
     {% end %}
+    <th class="supersedes">Replaced</th>
     </tr>
   </thead>
   <tbody>
@@ -202,13 +218,18 @@ classify-able, and some may incorrectly categorized. The categories are just for
   {% set current_total = data["count"] %}
   {% set previous_total = previous.get("count", 0) %}
   <tr>
-    <th>{{data["code"]}}</th>
-    <td>{{escape(data["description"])}}</td>
+    <th class="signcode">{{data["code"]}}</th>
+    <td class="signdesc">{{escape(data["description"])}}</td>
     <td class="number" data-sortkey="{{escape(str(current_total))}}">{{locale.format("%d", current_total, grouping=True)}}</td>
     {% if previous_data %}
       <td class="number sm" {% if previous %} data-sortkey="{{current_total - previous_total}}"{% end %}>{{delta(current_total, previous_total)}}</td>
       <td class="number" data-sortkey="{{escape(str(previous_total))}}">{{locale.format("%d", previous_total, grouping=True)}}</td>
     {% end %}
+    <td class="supersedes">
+      {% for c in data.get("supersedes", []) %}
+      <code>{{escape(c)}}</code>
+      {% end %}
+    </td>
   </tr>
 {% end %}
   </tbody>
@@ -221,6 +242,7 @@ classify-able, and some may incorrectly categorized. The categories are just for
       <td class="delta number sm">{{delta(total_count, previous_count)}}</td>
       <td class="previous-count number">{{locale.format("%d", previous_count, grouping=True)}}</td>
       {% end %}
+      <td></td>
     </tr>
   </tfoot>
 </table>
@@ -238,6 +260,14 @@ classify-able, and some may incorrectly categorized. The categories are just for
   <script>
 $(function(){
   $(".sign-data").tablesorter({
+    headers: {
+      // disable sorting of the first & second column - before we would have to had made two entries
+      // note that "first-name" is a class on the span INSIDE the first column th cell
+      '.supersedes' : {
+        // disable it by setting the property sorter to false
+        sorter: false
+      }
+    },
     textExtraction: function(node) {
       var node = $(node), sortkey = node.data('sortkey');
       return (sortkey !== undefined) ? sortkey : node.html();

@@ -80,11 +80,20 @@ func extractSuperseedInfo(description string) (superseededBy string, superseeds 
 		case "SUPERSEDED BY", "USE":
 			fields := strings.Fields(matches[2])
 			for _, c := range fields {
+				c = strings.Trim(c, ",.")
 				if strings.HasPrefix(c, "-") {
 					continue
 				}
+				if strings.Contains(c, "/") {
+					// i.e. 5/9/84
+					continue
+				}
+				if strings.Count(c, "-") > 1 {
+					// i.e. 11-3-88
+					continue
+				}
 				switch c {
-				case "&", ".", "DATED", "DON't":
+				case "", ",", "&", ".", "DATED", "DON'T":
 					continue
 				}
 				superseededBy = c
@@ -93,11 +102,20 @@ func extractSuperseedInfo(description string) (superseededBy string, superseeds 
 		case "SUPERSEDES":
 			fields := strings.Fields(matches[2])
 			for _, c := range fields {
+				c = strings.Trim(c, ",.")
 				if strings.HasPrefix(c, "-") {
 					continue
 				}
+				if strings.Contains(c, "/") {
+					// i.e. 5/9/84
+					continue
+				}
+				if strings.Count(c, "-") > 1 {
+					// i.e. 11-3-88
+					continue
+				}
 				switch c {
-				case "&", ".", "DATED", "DON't":
+				case "", ",", "&", ".", "DATED", "DON'T":
 					continue
 				}
 				superseeds = append(superseeds, c)
