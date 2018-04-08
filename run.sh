@@ -1,23 +1,23 @@
 #!/bin/bash
 
-[ ! -e /usr/local/bin/brew ] && echo "brew required" && exit 1
-if ! brew list postgresql >/dev/null; then 
-    echo "brew install postgresql"
-    brew install postgresql || exit 1
-else
-    echo "postgresql installed"
-fi
+# [ ! -e /usr/local/bin/brew ] && echo "brew required" && exit 1
+# if ! brew list postgresql >/dev/null; then 
+#     echo "brew install postgresql"
+#     brew install postgresql || exit 1
+# else
+#     echo "postgresql installed"
+# fi
 
-if brew services list postgresql | grep -q stopped; then
-    echo "brew services start postgresql"
-    brew services start postgresql || exit 1
-else
-    brew services list postgresql
-fi
+# if brew services list postgresql | grep -q stopped; then
+#     echo "brew services start postgresql"
+#     brew services start postgresql || exit 1
+# else
+#     brew services list postgresql
+# fi
 
 YMD=$(date +%Y-%m-%d)
-YMD=2017-12-24
-YMD=2017-01-13
+PREVIOUSYMD=2017-01-13
+PREVIOUSYMD=2017-12-24
 YMD=2018-04-08
 
 if [ ! -e data/locations_$YMD.csv ]; then
@@ -35,9 +35,14 @@ if [ "$?" != 0 ]; then
     echo "error running ./nyc_parking"
     exit 1
 fi
-echo "generating report"
-./generate_report.py --current-file=data/sign_data_$YMD.json
+
+ARGS="--current-file=data/sign_data_$YMD.json"
+if [ -e "data/sign_data_$PREVIOUSYMD.json" ]; then
+    ARGS="$ARGS --previous-file=data/sign_data_$PREVIOUSYMD.json"
+fi
+echo "./generate_report.py $ARGS"
+./generate_report.py $ARGS
 if [ "$?" != 0 ]; then
-    echo "error running ./generate_report.py"
+    echo "error running ./generate_report.py $ARGS"
     exit 1
 fi

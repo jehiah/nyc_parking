@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 import tornado.options
 import tornado.template
 import json
@@ -10,61 +11,41 @@ def pct_of(a, b):
     delta = float(a) / (b) * 100
     return "%0.2f%%" % delta
 
-def delta_ms(a, b):
-    delta = a - b
-    if delta > 0:
-        txt = "+" + locale.format("%d", delta, grouping=True)
-    else:
-        txt = locale.format("%d", delta, grouping=True)
-    return '<span class="%s">%s<small>ms</small></span>' % (delta_ms_css(delta), txt)
-
-def delta(a, b, up=True):
-    assert isinstance(up, bool)
+def delta(a, b, flip=False):
+    assert isinstance(flip, bool)
     delta = a - b
     pct = 0
     if b != 0:
         pct = ((float(a) / b) * 100) - 100
+    elif a > 0:
+        pct = 100
     if delta > 0:
         txt = "+" + locale.format("%d", delta, grouping=True)
     else:
         txt = locale.format("%d", delta, grouping=True)
-    return '<span class="%s">%s</span>' % (delta_pct_css(pct, up), txt)
+    return '<span class="%s">%s</span>' % (delta_pct_css(pct, flip), txt)
 
-def delta_pct_css(delta, up):
+def delta_pct_css(delta_pct, flip):
     css = ""
-    if delta > 10:
-        css = "down down-10"
-    elif delta > 5:
-        css ="down down-5"
-    elif delta > 0:
-        css = "down"
-    elif delta < -10:
+    if delta_pct == 0:
+        return "nochange"
+    if delta_pct > 10:
         css = "up up-10"
-    elif delta < -5:
-        css = "up up-5"
-    else:
+    elif delta_pct > 5:
+        css ="up up-5"
+    elif delta_pct > 0:
         css = "up"
-    if not up:
+    elif delta_pct < -10:
+        css = "down down-10"
+    elif delta_pct < -5:
+        css = "down down-5"
+    else:
+        css = "down"
+    if flip:
         if 'up' in css:
             return css.replace('up', 'down')
         return css.replace('down', 'up')
         
-    return css
-
-def delta_ms_css(delta):
-    css = ""
-    if delta > 250:
-        css = "up-10"
-    elif delta > 100:
-        css ="up-5"
-    elif delta > 0:
-        css = "up"
-    elif delta < -250:
-        css = "down-10"
-    elif delta < -100:
-        css = "down-5"
-    else:
-        css = "down"
     return css
 
 def load_file(filename):
@@ -102,7 +83,6 @@ def run(current_file, previous_file):
         current_data = current_data,
         previous_data = previous_data,
         pct_of=pct_of,
-        delta_ms=delta_ms,
         delta=delta,
         categories=(
             ("ParkingSign", "Parking Signs"),

@@ -20,7 +20,7 @@ func ParseCSV(f io.Reader) ([]SignPosition, []error) {
 			break
 		}
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("parseCSV %s", err)
 		}
 
 		sign, err := FromCSV(row)
@@ -56,7 +56,7 @@ func ParseOldCSV(f io.Reader) ([]SignPosition, []error) {
 		signs = append(signs, sign)
 	}
 	if err := r.Err(); err != nil {
-		log.Fatal(err)
+		log.Fatalf("parseOldCSV %s", err)
 	}
 	return signs, errors
 }
