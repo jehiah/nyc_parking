@@ -18,7 +18,9 @@
 YMD=$(date +%Y-%m-%d)
 PREVIOUSYMD=2017-01-13
 PREVIOUSYMD=2017-12-24
-YMD=2018-04-08
+#PREVIOUSYMD=2018-04-08
+#PREVIOUSYMD=2018-07-29
+YMD=2018-10-18
 
 if [ ! -e data/locations_$YMD.csv ]; then
     echo "downloading locations_$YMD.csv"

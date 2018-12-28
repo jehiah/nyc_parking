@@ -56,6 +56,7 @@ var descReplacer = strings.NewReplacer(
 	"SUPEREDES", "SUPERSEDES",
 	"SUP RSEDES", "SUPERSEDES",
 	"SUPER SEDES", "SUPERSEDES",
+	"SUPERSED ES", "SUPERSEDES",
 )
 
 func CleanDescription(d string) string {
@@ -183,6 +184,14 @@ func SignTypeFromDescription(d string) SignType {
 	} {
 		if strings.Contains(d, needle) {
 			return StreetCleaning
+		}
+	}
+
+	for _, needle := range []string{
+		"IDLING",
+	} {
+		if strings.Contains(d, needle) {
+			return OtherRegulationSign
 		}
 	}
 
