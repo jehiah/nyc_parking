@@ -12,8 +12,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-
-	common_models "github.com/coordcity/go/common/models"
 )
 
 // SegmentTimeFeatureProperties segment time feature properties
@@ -30,7 +28,7 @@ type SegmentTimeFeatureProperties struct {
 
 	// The price a vehicle must pay while on this segment starting at this time.
 	//
-	Price []*common_models.PricingRule `json:"price"`
+	Price []*PricingRule `json:"price"`
 
 	// The reasons for the rules that apply at this time.
 	Reasons []Reason `json:"reasons"`

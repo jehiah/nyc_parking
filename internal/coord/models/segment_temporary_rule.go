@@ -13,8 +13,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	common_models "github.com/coordcity/go/common/models"
 )
 
 // SegmentTemporaryRule A temporary rule that applies along a particular segment of curb. Rather than recurring
@@ -54,7 +52,7 @@ type SegmentTemporaryRule struct {
 	//   * Parking at $4 for the first hour and $5 for the second hour thereafter,
 	// A vehicle arriving at 7am would pay $1 for the first hour and $5 for the second.
 	//
-	Price []*common_models.PricingRule `json:"price"`
+	Price []*PricingRule `json:"price"`
 
 	// primary
 	Primary Uses `json:"primary,omitempty"`

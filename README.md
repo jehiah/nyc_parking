@@ -12,3 +12,10 @@ http://www.nyc.gov/html/dot/html/about/datafeeds.shtml#parkingreg
 Prior Art:
 
 2014 - https://github.com/jamesbursa/analyze-nyc-parking-signs and matching writeup http://zamez.org/articles/nyc-parking-data
+
+--
+
+NYC Bounding Box
+West Long -74.257159 East -73.699215
+North Lat 40.915568 South 40.495992
+from https://www1.nyc.gov/assets/planning/download/pdf/data-maps/open-data/nybb_metadata.pdf?ver=18c

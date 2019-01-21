@@ -13,8 +13,6 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
-
-	common_models "github.com/coordcity/go/common/models"
 )
 
 // Reservation A single reservation for a resource.
@@ -56,7 +54,7 @@ type Reservation struct {
 
 	// Information useful in identifying the vehicle the reservation is associated with.
 	//
-	VehicleID *common_models.Vehicle `json:"vehicle_id,omitempty"`
+	VehicleID *Vehicle `json:"vehicle_id,omitempty"`
 }
 
 // Validate validates this reservation

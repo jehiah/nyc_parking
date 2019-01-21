@@ -12,8 +12,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-
-	common_models "github.com/coordcity/go/common/models"
 )
 
 // SegmentRule The rules that apply along a particular segment of a curb during certain time periods.
@@ -47,7 +45,7 @@ type SegmentRule struct {
 	//   * Parking at $4 for the first hour and $5 for the second hour thereafter,
 	// A vehicle arriving at 7am would pay $1 for the first hour and $5 for the second.
 	//
-	Price []*common_models.PricingRule `json:"price"`
+	Price []*PricingRule `json:"price"`
 
 	// primary
 	Primary Uses `json:"primary,omitempty"`
@@ -56,7 +54,7 @@ type SegmentRule struct {
 	Reasons []Reason `json:"reasons"`
 
 	// The days and times of day when this rule applies.
-	Times []*common_models.TimeAndDay `json:"times"`
+	Times []*TimeAndDay `json:"times"`
 
 	// vehicle type
 	VehicleType VehicleTypes `json:"vehicle_type,omitempty"`
