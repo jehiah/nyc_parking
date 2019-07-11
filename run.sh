@@ -20,7 +20,8 @@ PREVIOUSYMD=2017-01-13
 PREVIOUSYMD=2017-12-24
 #PREVIOUSYMD=2018-04-08
 #PREVIOUSYMD=2018-07-29
-YMD=2018-10-18
+PREVIOUSYMD=2018-10-18
+YMD=2019-07-10
 
 if [ ! -e data/locations_$YMD.csv ]; then
     echo "downloading locations_$YMD.csv"
@@ -32,6 +33,7 @@ if [ ! -e data/signs_$YMD.csv ]; then
 fi
 
 echo "running nyc_parking analysis"
+echo "./nyc_parking --signs=data/signs_$YMD.csv --locations=data/locations_$YMD.csv --sign_summary > data/sign_data_$YMD.json"
 ./nyc_parking --signs=data/signs_$YMD.csv --locations=data/locations_$YMD.csv --sign_summary > data/sign_data_$YMD.json
 if [ "$?" != 0 ]; then
     echo "error running ./nyc_parking"

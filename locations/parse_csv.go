@@ -1,32 +1,28 @@
 package locations
 
 import (
-	"encoding/csv"
 	"io"
+	"bufio"
+	"strings"
 	"log"
 )
 
-func ParseCSV(f io.Reader) ([]Location, []error) {
-	r := csv.NewReader(f)
-	r.Read() // consume header
-
+func ParseCSV(r io.Reader) ([]Location, []error) {
+	scanner := bufio.NewScanner(r)
 	var errors []error
 	var locations []Location
-	for {
-		row, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-
+	scanner.Scan() // consume header
+	for scanner.Scan() {
+		row := strings.Split(scanner.Text(), ",")
 		l, err := FromCSV(row)
 		if err != nil {
 			errors = append(errors, err)
 			continue
 		}
 		locations = append(locations, l)
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
 	}
 	return locations, errors
 }
