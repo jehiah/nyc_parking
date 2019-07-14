@@ -39,7 +39,7 @@ type SignPosition struct {
 	Borough  string
 	Order    string
 	Seq      int
-	Distance string // TODO convert to int?
+	Distance int
 	Arrow    string // "" (both), "W", "E", ...
 	Sign
 }
@@ -48,13 +48,17 @@ func FromCSV(row []string) (s SignPosition, err error) {
 	// Columns: SRP_Boro,SRP_Order,SRP_seq,SR_Distx,SR_Arrow,Sign_descripition,SR_Mutcd_Code,
 	seq, err := strconv.Atoi(row[2])
 	if err != nil {
-		return
+		return s, err
+	}
+	dist, err := strconv.Atoi(row[3])
+	if err != nil {
+		return s, err
 	}
 	s = SignPosition{
 		Borough:  row[0],
 		Order:    strings.TrimSpace(row[1]),
 		Seq:      seq,
-		Distance: strings.TrimSpace(row[3]),
+		Distance: dist,
 		Arrow:    strings.TrimSpace(row[4]),
 		Sign: Sign{
 			Code: strings.TrimSpace(row[6]),
