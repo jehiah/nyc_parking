@@ -7,7 +7,7 @@ import (
 	"github.com/jehiah/nyc_parking/locations"
 )
 
-func ParseLocations(filename string) []locations.Location {
+func ParseLocations(filename string) locations.Locations {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatal(err)

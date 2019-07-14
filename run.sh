@@ -50,3 +50,8 @@ if [ "$?" != 0 ]; then
     echo "error running ./generate_report.py $ARGS"
     exit 1
 fi
+
+# ack 'WEST\s+44 STREET,\s*9' data/locations_2019-07-10.csv 
+
+# 'Order'
+# S-087878, S-089254

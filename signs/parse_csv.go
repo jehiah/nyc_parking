@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func ParseCSV(f io.Reader) ([]SignPosition, []error) {
+func ParseCSV(f io.Reader) (SignPositions, []error) {
 	r := csv.NewReader(f)
 	r.Read() // consume header
 
@@ -36,7 +36,7 @@ func ParseCSV(f io.Reader) ([]SignPosition, []error) {
 // ParseOldCSV handles CSV's didn't format the description properly,
 // so strip the last field, then the first and anything
 // remaining is the description
-func ParseOldCSV(f io.Reader) ([]SignPosition, []error) {
+func ParseOldCSV(f io.Reader) (SignPositions, []error) {
 	r := bufio.NewScanner(f)
 	r.Scan() // consume header
 	var errors []error

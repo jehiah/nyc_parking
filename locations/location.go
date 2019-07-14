@@ -2,6 +2,7 @@ package locations
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -13,6 +14,7 @@ type Location struct {
 	FromStreet, ToStreet string
 	Side                 string // N, W, E, S, ...
 }
+type Locations []Location
 
 var stripWhitespace = regexp.MustCompile(`\s+`)
 
@@ -29,4 +31,21 @@ func FromCSV(row []string) (Location, error) {
 		ToStreet:   stripWhitespace.ReplaceAllString(row[4], " "),
 		Side:       strings.TrimSpace(row[5]),
 	}, nil
+}
+
+func (l Locations) FindOrder(order string) (Location, bool) {
+	for _, ll := range l {
+		if ll.Order == order {
+			return ll, true
+		}
+	}
+	return Location{}, false
+}
+func (l Locations) Order(order string) Location {
+	if ll, ok := l.FindOrder(order); !ok {
+		log.Fatal("order %q not found", order)
+	} else {
+		return ll
+	}
+	panic("unreachable")
 }

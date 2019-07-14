@@ -44,10 +44,10 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Cur
 
 	// create transport and client
 	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
-	
+
 	// custom transport
 	transport.Consumers["application/vnd.geo+json"] = runtime.JSONConsumer()
-	
+
 	return New(transport, formats)
 }
 

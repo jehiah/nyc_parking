@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"log"
 	"fmt"
+	"log"
 	"reflect"
 
 	"github.com/jonas-p/go-shp"
@@ -12,25 +12,25 @@ import (
 func main() {
 	file := flag.String("filename", "", "")
 	flag.Parse()
-	
+
 	shape, err := shp.Open(*file)
-	if err != nil { 
-		log.Fatal(err) 
-	} 
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer shape.Close()
-	
+
 	// fields from the attribute table (DBF)
 	fields := shape.Fields()
-	
+
 	// loop through all features in the shapefile
 	var i int
 	for shape.Next() {
 		i++
 		n, p := shape.Shape()
-	
+
 		// print feature
 		fmt.Println(reflect.TypeOf(p).Elem(), p.BBox())
-	
+
 		// print attributes
 		for k, f := range fields {
 			val := shape.ReadAttribute(n, k)
@@ -40,7 +40,7 @@ func main() {
 		if i > 100 {
 			break
 		}
-		
+
 	}
 
 }

@@ -1,13 +1,13 @@
 package locations
 
 import (
-	"io"
 	"bufio"
-	"strings"
+	"io"
 	"log"
+	"strings"
 )
 
-func ParseCSV(r io.Reader) ([]Location, []error) {
+func ParseCSV(r io.Reader) (Locations, []error) {
 	scanner := bufio.NewScanner(r)
 	var errors []error
 	var locations []Location

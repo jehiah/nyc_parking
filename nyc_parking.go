@@ -20,9 +20,19 @@ func main() {
 	locationsFile := flag.String("locations", "", "path to locations.csv")
 	signSummary := flag.Bool("sign_summary", false, "output json-lines of sign data")
 	oldFormat := flag.Bool("old_format", false, "old CSV format")
+	order := flag.String("order", "", "")
 	flag.Parse()
 
 	s := ParseSigns(*signsFile, *oldFormat)
+	l := ParseLocations(*locationsFile)
+
+	if *order != "" {
+		log.Printf("%#v", l.Order(*order))
+		for _, sp := range s.FilterOrder(*order) {
+			log.Printf("%s", sp.Summary())
+		}
+		return
+	}
 
 	if *signSummary {
 		if len(s) == 0 {
@@ -90,7 +100,5 @@ func main() {
 			fmt.Printf("%s\n", string(b))
 		}
 
-	} else {
-		ParseLocations(*locationsFile)
 	}
 }

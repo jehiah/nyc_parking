@@ -1,7 +1,9 @@
 package signs
 
 import (
+	"fmt"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -42,6 +44,23 @@ type SignPosition struct {
 	Distance int
 	Arrow    string // "" (both), "W", "E", ...
 	Sign
+}
+type SignPositions []SignPosition
+
+// FilterOrder returns the sign positions for a given Order sorted by Seq
+func (s SignPositions) FilterOrder(order string) SignPositions {
+	var o SignPositions
+	for _, ss := range s {
+		if ss.Order == order {
+			o = append(o, ss)
+		}
+	}
+	sort.Slice(o, func(i, j int) bool { return o[i].Seq < o[j].Seq })
+	return o
+}
+
+func (s SignPosition) Summary() string {
+	return fmt.Sprintf("Sign[%2d] Distance:%-4d Arrow:%s Sign:%s %s", s.Seq, s.Distance, fmt.Sprintf("%1s", s.Arrow), s.Sign.Type, s.Sign.Description)
 }
 
 func FromCSV(row []string) (s SignPosition, err error) {
