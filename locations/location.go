@@ -26,9 +26,9 @@ func FromCSV(row []string) (Location, error) {
 	return Location{
 		Borough:    row[0],
 		Order:      strings.TrimSpace(row[1]),
-		Street:     stripWhitespace.ReplaceAllString(row[2], " "),
-		FromStreet: stripWhitespace.ReplaceAllString(row[3], " "),
-		ToStreet:   stripWhitespace.ReplaceAllString(row[4], " "),
+		Street:     strings.TrimSpace(stripWhitespace.ReplaceAllString(row[2], " ")),
+		FromStreet: strings.TrimSpace(stripWhitespace.ReplaceAllString(row[3], " ")),
+		ToStreet:   strings.TrimSpace(stripWhitespace.ReplaceAllString(row[4], " ")),
 		Side:       strings.TrimSpace(row[5]),
 	}, nil
 }

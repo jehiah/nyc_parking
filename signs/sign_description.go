@@ -57,6 +57,8 @@ var descReplacer = strings.NewReplacer(
 	"SUP RSEDES", "SUPERSEDES",
 	"SUPER SEDES", "SUPERSEDES",
 	"SUPERSED ES", "SUPERSEDES",
+
+	"11:30AM-1 M", "11:30AM-1PM",
 )
 
 func CleanDescription(d string) string {
