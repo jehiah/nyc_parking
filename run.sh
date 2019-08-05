@@ -21,11 +21,13 @@ PREVIOUSYMD=2017-12-24
 #PREVIOUSYMD=2018-04-08
 #PREVIOUSYMD=2018-07-29
 PREVIOUSYMD=2018-10-18
-YMD=2019-07-10
+PREVIOUSYMD=2019-07-10
+YMD=2019-08-03
 
 if [ ! -e data/locations_$YMD.csv ]; then
     echo "downloading locations_$YMD.csv"
     curl --silent -o data/locations_$YMD.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/locations.CSV" || exit 1
+	sed -i -e 's/\r/\r\n/g' data/locations_$YMD.csv
 fi
 if [ ! -e data/signs_$YMD.csv ]; then
     echo "downloading signs_$YMD.csv"
