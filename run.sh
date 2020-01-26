@@ -15,23 +15,29 @@
 #     brew services list postgresql
 # fi
 
-YMD=$(date +%Y-%m-%d)
+# YMD=$(date +%Y-%m-%d)
 PREVIOUSYMD=2017-01-13
 PREVIOUSYMD=2017-12-24
-#PREVIOUSYMD=2018-04-08
-#PREVIOUSYMD=2018-07-29
+PREVIOUSYMD=2018-04-08
+PREVIOUSYMD=2018-07-29
 PREVIOUSYMD=2018-10-18
 PREVIOUSYMD=2019-07-10
-YMD=2019-08-03
+PREVIOUSYMD=2019-08-03
+PREVIOUSYMD=2019-11-29
+YMD=${YMD:-2020-01-26}
+
+# through nov 2019 - https://data.cityofnewyork.us/Transportation/Parking-Regulation-Locations-and-Signs/xswq-wnv9/data
+# URLBASE="http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg" # files ended in CSV not csv
+URLBASE="https://www1.nyc.gov/html/dot/downloads/ParkReg"
 
 if [ ! -e data/locations_$YMD.csv ]; then
     echo "downloading locations_$YMD.csv"
-    curl --silent -o data/locations_$YMD.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/locations.CSV" || exit 1
-	sed -i -e 's/\r/\r\n/g' data/locations_$YMD.csv
+    curl --silent -o data/locations_$YMD.csv "$URLBASE/locations.csv" || exit 1
+    # sed -i -e 's/\r/\r\n/g' data/locations_$YMD.csv
 fi
 if [ ! -e data/signs_$YMD.csv ]; then
     echo "downloading signs_$YMD.csv"
-    curl --silent -o data/signs_$YMD.csv "http://a841-dotweb01.nyc.gov/datafeeds/ParkingReg/signs.CSV" || exit 1
+    curl --silent -o data/signs_$YMD.csv "$URLBASE/signs.csv" || exit 1
 fi
 
 echo "running nyc_parking analysis"
